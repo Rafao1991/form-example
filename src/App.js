@@ -1,25 +1,17 @@
-import logo from './logo.svg';
 import './App.css';
+import { Container, Typography } from "@mui/material";
+import React, { Component } from 'react';
+import SignUpForm from './components/signUpForm';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  render() {
+    return <Container component="article" maxWidth="sm">
+      <Typography variant="h3" component="h1" align="center">
+        Sign-up Form
+      </Typography>
+      <SignUpForm />
+    </Container>;
+  }
 }
 
 export default App;
