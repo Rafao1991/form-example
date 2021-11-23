@@ -1,95 +1,53 @@
-import React, { useState } from "react";
-import { Button, FormControlLabel, Switch, TextField } from "@mui/material";
+import { Step, StepLabel, Stepper, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import AddressData from "./AddressData";
+import LoginData from "./LoginData";
+import PersonalData from "./PersonalData";
 
-function SignUpForm({ signUp, validateCPF }) {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [cpf, setCPF] = useState("");
-  const [sales, setSales] = useState(true);
-  const [news, setNews] = useState(true);
-  const [error, setError] = useState({ cpf: { valid: true, message: "" } });
+function SignUpForm({ signUp }) {
+  const [step, setStep] = useState(0);
+  const [userData, setUserData] = useState({});
+
+  useEffect(() => {
+    if (step === 3) {
+      signUp(userData);
+    }
+  });
+
+  const steps = {
+    0: <LoginData nextStep={nextStep} />,
+    1: <PersonalData nextStep={nextStep} />,
+    2: <AddressData nextStep={nextStep} />,
+    3: (
+      <Typography align="center" variant="h5" component="h3">
+        Thanks for your info...
+      </Typography>
+    ),
+  };
+
+  function nextStep(data) {
+    setUserData({ ...userData, ...data });
+    setStep(step + 1);
+  }
 
   return (
-    <form
-      onSubmit={(event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        signUp({ firstName, lastName, cpf, sales, news });
-      }}
-    >
-      <TextField
-        id="firstName"
-        label="First name"
-        margin="normal"
-        onChange={(event) => {
-          event.stopPropagation();
-          setFirstName(event.target.value);
-        }}
-        value={firstName}
-        variant="outlined"
-        fullWidth
-      />
-      <TextField
-        id="lastName"
-        label="Last name"
-        margin="normal"
-        onChange={(event) => {
-          event.stopPropagation();
-          setLastName(event.target.value);
-        }}
-        value={lastName}
-        variant="outlined"
-        fullWidth
-      />
-      <TextField
-        id="cpf"
-        error={!error.cpf.valid}
-        helperText={error.cpf.message}
-        label="CPF"
-        margin="normal"
-        onBlur={(event) => {
-          event.stopPropagation();
-          const result = validateCPF(cpf);
-          setError({ cpf: result });
-        }}
-        onChange={(event) => {
-          event.stopPropagation();
-          setCPF(event.target.value);
-        }}
-        value={cpf}
-        variant="outlined"
-        fullWidth
-      />
-      <FormControlLabel
-        control={
-          <Switch
-            id="sales"
-            checked={sales}
-            onChange={(event) => {
-              event.stopPropagation();
-              setSales(event.target.checked);
-            }}
-          />
-        }
-        label="Sales"
-      />
-      <FormControlLabel
-        control={
-          <Switch
-            id="news"
-            checked={news}
-            onChange={(event) => {
-              event.stopPropagation();
-              setNews(event.target.checked);
-            }}
-          />
-        }
-        label="News"
-      />
-      <Button type="submit" variant="contained" color="primary">
-        Sign-up
-      </Button>
-    </form>
+    <>
+      <Stepper activeStep={step} alternativeLabel>
+        <Step key="loginData">
+          <StepLabel>Login data</StepLabel>
+        </Step>
+        <Step key="personalData">
+          <StepLabel>Personal data</StepLabel>
+        </Step>
+        <Step key="addressData">
+          <StepLabel>Address data</StepLabel>
+        </Step>
+        <Step key="done">
+          <StepLabel>All done!</StepLabel>
+        </Step>
+      </Stepper>
+      {steps[step]}
+    </>
   );
 }
 
