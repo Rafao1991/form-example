@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Button, FormControlLabel, Switch, TextField } from "@mui/material";
 import ValidadeContext from "../../context/ValidateContext.js";
+import useError from "../../hook/useError.js";
 
 function PersonalData({ nextStep }) {
   const [firstName, setFirstName] = useState("");
@@ -8,26 +9,10 @@ function PersonalData({ nextStep }) {
   const [cpf, setCPF] = useState("");
   const [sales, setSales] = useState(true);
   const [news, setNews] = useState(true);
-  const [error, setError] = useState({ cpf: { valid: true, message: "" } });
 
   const validate = useContext(ValidadeContext);
 
-  function validateFields(event) {
-    event.stopPropagation();
-    const { name, value } = event.target;
-    const newState = { ...error };
-    newState[name] = validate[name](value);
-    setError(newState);
-  }
-
-  function validateSubmit() {
-    for (let field in error) {
-      if (!error[field].valid) {
-        return false;
-      }
-    }
-    return true;
-  }
+  const [error, validateFields, validateSubmit] = useError(validate);
 
   return (
     <form

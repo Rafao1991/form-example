@@ -1,32 +1,15 @@
 import React, { useContext, useState } from "react";
 import { Button, TextField } from "@mui/material";
 import ValidadeContext from "../../context/ValidateContext.js";
+import useError from "../../hook/useError.js";
 
 function LoginData({ nextStep }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState({
-    password: { valid: true, message: "" },
-  });
 
   const validate = useContext(ValidadeContext);
 
-  function validateFields(event) {
-    event.stopPropagation();
-    const { name, value } = event.target;
-    const newState = { ...error };
-    newState[name] = validate[name](value);
-    setError(newState);
-  }
-
-  function validateSubmit() {
-    for (let field in error) {
-      if (!error[field].valid) {
-        return false;
-      }
-    }
-    return true;
-  }
+  const [error, validateFields, validateSubmit] = useError(validate);
 
   return (
     <form
